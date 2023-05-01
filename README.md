@@ -28,3 +28,4 @@ Utility Trait reads the file 'mime.types' and updates the traits AfrFileMimeExte
 - AfrFileMimeGeneratorTrait
 - Runs in tests
 - mime.types is updated from https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
+
