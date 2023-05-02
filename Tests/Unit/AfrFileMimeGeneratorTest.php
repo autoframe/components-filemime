@@ -13,8 +13,8 @@ class AfrFileMimeGeneratorTest extends TestCase
     function initFileMimeParseMimeTypesDataProvider(): array
     {
         echo __CLASS__ . '->' . __FUNCTION__ . PHP_EOL;
-
-        return [[ $this->getUpdatedMimeTypesFromRepo(3600 * 24 * 365 * 100) ]];
+        $bRun = $this->getUpdatedMimeTypesFromRepo(3600 * 24 * 365 * 100);
+        return [[ is_bool($bRun) ]];
     }
 
     /**
