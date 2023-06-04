@@ -24,6 +24,8 @@ interface AfrFileMimeInterface
 
 
     /**
+     * Input: '/dir/test.wmz'
+     * Output: ['application/x-ms-wmz','application/x-msmetafile']
      * wmz extension has multiple mimes
      * @param string $sFileNameOrPath
      * @return array
@@ -31,7 +33,8 @@ interface AfrFileMimeInterface
     public function getAllMimesFromFileName(string $sFileNameOrPath): array;
 
     /**
-     * Data: /dir/test.jpg
+     * Input: '/dir/test.jpg'
+     * Output: 'image/jpeg'
      * @param string $sFileNameOrPath
      * @return string
      */
@@ -39,11 +42,19 @@ interface AfrFileMimeInterface
 
 
     /**
-     * Data: 'image/jpeg'
+     * Input: 'image/jpeg'
+     * Output: ['jpeg','jpg','jpe']
      * @param string $sMime
      * @return array
      */
     public function getExtensionsForMime(string $sMime): array;
 
+    /**
+     * Input: '/dir/test.jpg'
+     * Output: 'jpg'
+     * @param string $sFileNameOrPath
+     * @return string
+     */
+    public function getExtensionFromPath(string $sFileNameOrPath): string;
 
 }

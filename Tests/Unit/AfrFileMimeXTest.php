@@ -2,17 +2,28 @@
 
 namespace Unit;
 
-use Autoframe\Components\FileMime\AfrFileMimeTrait;
+use Autoframe\Components\FileMime\AfrFileMimeClass;
 use PHPUnit\Framework\TestCase;
 
 class AfrFileMimeXTest extends TestCase
 {
-    use AfrFileMimeTrait;
 
-    function getMimeFromFileNameDataProvider(): array
+    protected AfrFileMimeClass $oAfrFileMimeClass;
+
+    protected function setUp(): void
+    {
+        $this->oAfrFileMimeClass = new AfrFileMimeClass();
+    }
+
+    protected function tearDown(): void
+    {
+
+    }
+
+    public static function getMimeFromFileNameDataProvider(): array
     {
         echo __CLASS__ . '->' . __FUNCTION__ . PHP_EOL;
-        $sFallback = $this->getFileMimeFallback();
+        $sFallback = 'application/octet-stream';
         $aOut = [
             ['./', $sFallback],
             ['../', $sFallback],
@@ -35,7 +46,7 @@ class AfrFileMimeXTest extends TestCase
             ['test.svg', 'image/svg+xml'],
             ['test.mmr', 'image/vnd.fujixerox.edmics-mmr'],
         ];
-        foreach (self::$aAfrFileMimeExtensions as $sExt => $sMime) {
+        foreach (AfrFileMimeClass::$aAfrFileMimeExtensions as $sExt => $sMime) {
             $aOut[] = ['test.' . ucwords($sExt), $sMime];
         }
         return $aOut;
@@ -47,15 +58,11 @@ class AfrFileMimeXTest extends TestCase
      */
     public function getMimeFromFileNameTest(string $sPath, string $sMime): void
     {
-        $this->assertSame(
-            $sMime,
-            $this->getMimeFromFileName($sPath),
-            print_r(func_get_args(), true)
-        );
+        $this->assertSame($sMime, $this->oAfrFileMimeClass->getMimeFromFileName($sPath));
     }
 
 
-    function getExtensionsForMimeDataProvider(): array
+    public static function getExtensionsForMimeDataProvider(): array
     {
         echo __CLASS__ . '->' . __FUNCTION__ . PHP_EOL;
         return [
@@ -67,21 +74,44 @@ class AfrFileMimeXTest extends TestCase
      * @test
      * @dataProvider getExtensionsForMimeDataProvider
      */
-    public function getExtensionsForMimeTest(string $sMime,$sExpected): void
+    public function getExtensionsForMimeTest(string $sMime, $sExpected): void
     {
-        $a = $this->getExtensionsForMime($sMime);
+        $a = $this->oAfrFileMimeClass->getExtensionsForMime($sMime);
         sort($a);
         $this->assertSame(
-            implode('|',$a),
+            implode('|', $a),
             $sExpected,
             print_r(func_get_args(), true)
         );
     }
 
 
+    public static function getExtensionFromPathDataProvider(): array
+    {
+        echo __CLASS__ . '->' . __FUNCTION__ . PHP_EOL;
+        return [
+            ['/dir/test.jpg', 'jpg'],
+            ['/dir', ''],
+            ['/dir/', ''],
+            ['/dir/README', ''],
+        ];
+    }
 
 
-    function getAllMimesFromFileNameDataProvider(): array
+    /**
+     * @test
+     * @dataProvider getExtensionFromPathDataProvider
+     */
+    public function getExtensionFromPathTest(string $sPath, $sExpected): void
+    {
+        $this->assertSame(
+            $this->oAfrFileMimeClass->getExtensionFromPath($sPath),
+            $sExpected,
+            print_r(func_get_args(), true)
+        );
+    }
+
+    public static function getAllMimesFromFileNameDataProvider(): array
     {
         echo __CLASS__ . '->' . __FUNCTION__ . PHP_EOL;
         return [
@@ -95,10 +125,10 @@ class AfrFileMimeXTest extends TestCase
      */
     public function getAllMimesFromFileNameTest(string $sExt, $sExpected): void
     {
-        $a = $this->getAllMimesFromFileName($sExt);
+        $a = $this->oAfrFileMimeClass->getAllMimesFromFileName($sExt);
         sort($a);
         $this->assertSame(
-            implode('|',$a),
+            implode('|', $a),
             $sExpected,
             print_r(func_get_args(), true)
         );

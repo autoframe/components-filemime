@@ -3,53 +3,68 @@
 namespace Unit;
 
 use Autoframe\Components\FileMime\Exception\AfrFileSystemMimeException;
-use Autoframe\Components\FileMime\AfrFileMimeGeneratorTrait;
+use Autoframe\Components\FileMime\AfrFileMimeGeneratorClass;
 use PHPUnit\Framework\TestCase;
+
 
 class AfrFileMimeGeneratorTest extends TestCase
 {
-    use AfrFileMimeGeneratorTrait;
+    protected AfrFileMimeGeneratorClass $oGenerator;
 
-    function initFileMimeParseMimeTypesDataProvider(): array
+    protected function setUp(): void
+    {
+        $this->oGenerator = new AfrFileMimeGeneratorClass();
+    }
+
+    public static function synchronizeMimeTypesFromApacheDataProvider(): array
     {
         echo __CLASS__ . '->' . __FUNCTION__ . PHP_EOL;
-        $bRun = $this->getUpdatedMimeTypesFromRepo(3600 * 24 * 365 * 100);
-        return [[ is_bool($bRun) ]];
+
+        return [
+            [3600 * 24 * 365 * 2, 1], //mime.types file is at least 2 years new
+            [0, 1], //renew  mime.types file and regenerate traits
+            [3600 * 24 * 365 * 2, 1] //mime.types file is at least 2 years new
+        ];
     }
+
 
     /**
      * @test
-     * @dataProvider initFileMimeParseMimeTypesDataProvider
+     * @dataProvider synchronizeMimeTypesFromApacheDataProvider
      */
-    public function initFileMimeParseMimeTypesTest(bool $bUpdated): void
+    public function synchronizeMimeTypesFromApacheTest($iMaxAgeSeconds, $iRegenerateTraitsIfxSecondsOlderThanMimes): void
     {
-        $this->assertSame(
-            true,
-            $bUpdated,
-            'Error when running update mime.types on AfrFileMimeGenerator->getUpdatedMimeTypesFromRepo()'
-        );
+        //THIS TEST RUNS ONLY ON LOCAL DEV BECAUSE IT MAKES EXTERNAL HTTP REQUESTS!
+        $bInsideProductionVendorDir = strpos(__DIR__, DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR) !== false;
+        if ($bInsideProductionVendorDir) {
+            $this->assertSame(1, 1);
+            return;
+        }
 
-        $iTsMimes = 0;
-        $sErr = '';
         try {
-            $iTsMimes = $this->initFileMimeParseMimeTypes();
+            $bResponse = $this->oGenerator->synchronizeMimeTypesFromApache(
+                $iMaxAgeSeconds,
+                $iRegenerateTraitsIfxSecondsOlderThanMimes
+            );
+            $this->assertSame(
+                true,
+                $bResponse,
+                'Timeout or parse error on https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types'
+            );
+            $this->assertSame(
+                true,
+                $this->oGenerator->traitsAreUpToDate($iRegenerateTraitsIfxSecondsOlderThanMimes),
+                'Traits are not up to date!'
+            );
 
         } catch (AfrFileSystemMimeException $e) {
-            $sErr = $e->getMessage() . ";\n" . $e->getTraceAsString();
-        }
-        if (!$iTsMimes) {
             $this->assertSame(
-                1,
-                0,
-                $sErr
-            );
-        } else {
-            $this->assertGreaterThan(
-                $iTsMimes-1,
-                time(),
-                'mime.types has a future timestamp, so the mime classes will be always regenerated!'
+                true,
+                false,
+                $e->getMessage() . ";\n" . $e->getTraceAsString()
             );
         }
+
     }
 
 }

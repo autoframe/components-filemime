@@ -25,7 +25,7 @@ trait AfrFileMimeTrait
     }
 
     /**
-     * @return string
+     * @return string 'application/octet-stream'
      */
     public function getFileMimeFallback(): string
     {
@@ -33,6 +33,8 @@ trait AfrFileMimeTrait
     }
 
     /**
+     * Input: '/dir/test.wmz'
+     * Output: ['application/x-ms-wmz','application/x-msmetafile']
      * wmz extension has multiple mimes
      * @param string $sFileNameOrPath
      * @return array
@@ -40,7 +42,7 @@ trait AfrFileMimeTrait
     public function getAllMimesFromFileName(string $sFileNameOrPath): array
     {
         $aReturn = [];
-        $sExt = strtolower($this->getFileMimeExtensionFromPath($sFileNameOrPath));
+        $sExt = strtolower($this->getExtensionFromPath($sFileNameOrPath));
         if (!empty($sExt)) {
             foreach (self::$aAfrFileMimeTypes as $sMine => $aExtensions) {
                 if (in_array($sExt, $aExtensions)) {
@@ -55,12 +57,14 @@ trait AfrFileMimeTrait
     }
 
     /**
+     * Input: '/dir/test.jpg'
+     * Output: 'image/jpeg'
      * @param string $sFileNameOrPath
      * @return string
      */
     public function getMimeFromFileName(string $sFileNameOrPath): string
     {
-        $sExt = strtolower($this->getFileMimeExtensionFromPath($sFileNameOrPath));
+        $sExt = strtolower($this->getExtensionFromPath($sFileNameOrPath));
         if (empty($sExt)) {
             return $this->getFileMimeFallback();
         } elseif (isset(self::$aAfrFileMimeExtensions[$sExt])) {
@@ -70,7 +74,8 @@ trait AfrFileMimeTrait
     }
 
     /**
-     * Expected: 'image/jpeg'
+     * Input: 'image/jpeg'
+     * Output: ['jpeg','jpg','jpe']
      * @param string $sMime
      * @return array
      */
@@ -83,10 +88,12 @@ trait AfrFileMimeTrait
     }
 
     /**
+     * Input: '/dir/test.jpg'
+     * Output: 'jpg'
      * @param string $sFileNameOrPath
      * @return string
      */
-    private function getFileMimeExtensionFromPath(string $sFileNameOrPath): string
+    public function getExtensionFromPath(string $sFileNameOrPath): string
     {
         $aPath = pathinfo($sFileNameOrPath);
         return isset($aPath['extension']) && strlen($aPath['extension']) > 0 ? $aPath['extension'] : '';
