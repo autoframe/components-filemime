@@ -4,8 +4,8 @@
         <testsuite name="Autoframe FileMime Components">
             <directory>./Tests/Unit</directory>
         </testsuite>
-        <testsuite name="autoframe/components-exception">
-            <directory>./vendor/autoframe/components-exception/Tests/Unit</directory>
+        <testsuite name="Package Dependencies Autoframe/*">
+            <directory>*/autoframe/*/Tests/Unit</directory>
         </testsuite>
     </testsuites>
 </phpunit>
