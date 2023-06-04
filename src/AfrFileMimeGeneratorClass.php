@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Autoframe\Components\FileMime;
 
 use Autoframe\Components\FileMime\Exception\AfrFileSystemMimeException;
+use Autoframe\DesignPatterns\Singleton\AfrSingletonAbstractClass;
+
 use function file_get_contents;
 use function file_put_contents;
 use function filemtime;
@@ -22,7 +24,7 @@ use function implode;
 /**
  * Utility reads the file 'mime.types' and updates the traits AfrFileMimeExtensions and AfrFileMimeTypes
  */
-class AfrFileMimeGeneratorClass
+class AfrFileMimeGeneratorClass extends AfrSingletonAbstractClass
 {
     protected string $sGeneratorMimeTypesPath = __DIR__ . DIRECTORY_SEPARATOR . 'mime.types';
 

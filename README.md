@@ -10,7 +10,7 @@
 Namespace:
 - Autoframe\\Component\\FileMime
 
-Class:
+Class is a SINGLETON:
 - AfrFileMimeClass + AfrFileMimeInterface + AfrFileMimeTrait
 - Methods:
   - getFileMimeTypes: array  *[... 'image/jpeg' => ['jpeg','jpg','jpe'], ...]*
@@ -27,6 +27,6 @@ Traits:
 
 Utility class reads/updates the file 'mime.types' and writes new traits AfrFileMimeExtensions and AfrFileMimeTypes
 - AfrFileMimeGeneratorClass
-- Runs only in local tests (not from inside vender dir)
+- Runs only in local tests (not from inside vendor dir)
 - mime.types is updated from https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
 

@@ -13,7 +13,7 @@ class AfrFileMimeGeneratorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->oGenerator = new AfrFileMimeGeneratorClass();
+        $this->oGenerator = AfrFileMimeGeneratorClass::getInstance();
     }
 
     public static function synchronizeMimeTypesFromApacheDataProvider(): array

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpunit colors="true" bootstrap="vendor/autoload.php" cacheResult="false">
+<phpunit colors="true" bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="Autoframe FileMime Components">
             <directory>./Tests/Unit</directory>

@@ -12,7 +12,7 @@ class AfrFileMimeXTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->oAfrFileMimeClass = new AfrFileMimeClass();
+        $this->oAfrFileMimeClass = AfrFileMimeClass::getInstance();
     }
 
     protected function tearDown(): void
